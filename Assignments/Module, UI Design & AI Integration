@@ -1,0 +1,377 @@
+# TeamMatch: Module, UI Design & AI Integration
+
+## Overview
+
+TeamMatch is a cloud-based web application designed to help instructors form balanced student teams for project-based courses. The system collects student inputs (skills, availability, experience) and uses a deterministic optimization engine to generate fair, explainable team assignments.
+
+This document outlines the system’s **modules, UI design, navigation flow, AI integration, system mapping, and comparison with existing systems**.
+
+---
+
+# Part 1: Module Design
+
+## 1. Authentication Module
+
+**Responsibilities:**
+
+* User registration and login
+* Role-based authentication (Student / Instructor)
+* Session management
+
+**Database Tables:**
+
+* Users
+* Roles
+
+---
+
+## 2. Student Profile Module
+
+**Responsibilities:**
+
+* Collect student skills, experience, availability
+* Validate and store inputs
+* Allow updates before submission deadline
+
+**Database Tables:**
+
+* StudentProfiles
+* AvailabilityMatrix
+
+---
+
+## 3. Instructor Configuration Module
+
+**Responsibilities:**
+
+* Define team size and constraints
+* Set skill priorities and project requirements
+* Configure matching rules
+
+**Database Tables:**
+
+* Courses
+* Constraints
+
+---
+
+## 4. Team Formation Module
+
+**Responsibilities:**
+
+* Run deterministic matching algorithm
+* Enforce constraints
+* Generate balanced teams
+
+**Database Tables:**
+
+* MatchRuns
+* Teams
+
+---
+
+## 5. AI Processing Module
+
+**Responsibilities:**
+
+* Convert unstructured skills into structured categories
+* Generate explanations for team assignments
+
+**Database Tables:**
+
+* SkillMappings
+* RunLogs
+
+---
+
+## 6. Contribution Tracking Module
+
+**Responsibilities:**
+
+* Track student contributions over time
+* Allow weekly check-ins
+* Provide analytics to instructors
+
+**Database Tables:**
+
+* Contributions
+* CheckIns
+
+---
+
+## 7. Reporting & Dashboard Module
+
+**Responsibilities:**
+
+* Display teams and metrics
+* Show analytics and explanations
+* Provide instructor insights
+
+**Database Tables:**
+
+* Teams
+* Metrics
+
+---
+
+# Part 2: UI Design
+
+## 1. Login Screen
+
+**Components:**
+
+* Email input field
+* Password input field
+* Login button
+* “Remember me” checkbox
+
+---
+
+## 2. Student Dashboard
+
+**Components:**
+
+* Profile form (skills, experience, availability)
+* Role selection dropdown
+* Submit button
+* Navigation menu
+
+---
+
+## 3. Instructor Dashboard
+
+**Components:**
+
+* Course overview table
+* Constraint configuration form
+* “Run Match” button
+* Navigation panel
+
+---
+
+## 4. Team Results Screen
+
+**Components:**
+
+* Team list table
+* Student assignments
+* Metrics (skill balance, availability)
+* Explanation panel
+
+---
+
+## 5. Contribution Tracking Screen
+
+**Components:**
+
+* Weekly check-in form
+* Task input fields
+* Evidence link input
+* Submission button
+
+---
+
+## 6. Analytics Dashboard
+
+**Components:**
+
+* Charts (team balance, engagement)
+* Contribution graphs
+* Status indicators
+
+---
+
+# Part 3: Navigation Flow
+
+## Navigation Flow Diagram (Text Representation)
+
+```
+Login → Dashboard
+Dashboard → Student Profile / Instructor Config
+Instructor Config → Run Match
+Run Match → Processing (Agent)
+Processing → Team Results
+Team Results → Analytics Dashboard
+Student → Weekly Check-in → Contribution Tracking
+```
+
+## Flow Explanation
+
+* Users log in and are routed based on role
+* Students submit profiles
+* Instructors configure constraints
+* Instructors trigger team generation
+* Results are displayed with analytics
+* Students submit weekly updates
+
+---
+
+# Part 4: AI Integration
+
+## Feature Name
+
+**Skill Normalization & Explainability Engine**
+
+---
+
+## Problem It Solves
+
+Students describe skills inconsistently (e.g., “JS”, “JavaScript”, “frontend dev”), making it difficult to compare and balance teams.
+
+---
+
+## Input
+
+* Student skill descriptions (text)
+* Instructor project description
+
+---
+
+## Output
+
+* Structured skill categories (e.g., frontend, backend, ML)
+* Skill weights
+* Natural-language explanation of team assignments
+
+---
+
+## Where It Appears in UI
+
+* Team Results Screen (explanation panel)
+* Instructor Dashboard (team reasoning summaries)
+
+---
+
+## Module
+
+* AI Processing Module
+
+---
+
+## Why This AI Feature is Valuable
+
+* Improves consistency in data
+* Enhances explainability
+* Supports better decision-making without replacing human control
+
+---
+
+# Part 5: System Mapping
+
+## UI → API → Database Mapping
+
+### Login
+
+* UI: Login Screen
+* API: `POST /login`
+* Database: Users
+
+---
+
+### Submit Student Profile
+
+* UI: Student Dashboard
+* API: `POST /students/profile`
+* Database: StudentProfiles, AvailabilityMatrix
+
+---
+
+### Configure Constraints
+
+* UI: Instructor Dashboard
+* API: `PUT /courses/constraints`
+* Database: Courses, Constraints
+
+---
+
+### Run Match
+
+* UI: Instructor Dashboard
+* API: `POST /matchruns`
+* Database: MatchRuns
+
+---
+
+### Get Teams
+
+* UI: Team Results Screen
+* API: `GET /teams`
+* Database: Teams
+
+---
+
+### Submit Check-in
+
+* UI: Contribution Tracking Screen
+* API: `POST /checkins`
+* Database: CheckIns
+
+---
+
+# Part 6: Existing System Analysis
+
+## Existing System: CATME (Comprehensive Assessment of Team Member Effectiveness)
+
+---
+
+## Key Features
+
+* Team formation based on surveys
+* Peer evaluation system
+* Instructor tools for managing teams
+
+---
+
+## Limitations
+
+* Limited explainability of team assignments
+* Less flexibility in constraint customization
+* Older UI/UX design
+* Less integration with modern cloud systems
+
+---
+
+## Comparison with TeamMatch
+
+| Feature            | CATME        | TeamMatch                                     |
+| ------------------ | ------------ | --------------------------------------------- |
+| Team Formation     | Survey-based | Deterministic optimization                    |
+| Explainability     | Limited      | Fully explainable                             |
+| Custom Constraints | Limited      | Highly customizable                           |
+| UI/UX              | Traditional  | Modern web interface                          |
+| AI Usage           | Minimal      | Skill normalization + explanations            |
+| Architecture       | Monolithic   | Cloud-native (AWS serverless + microservices) |
+
+---
+
+## What Makes TeamMatch Better
+
+* **Deterministic and reproducible results** (same input = same output)
+* **Explainable system** (clear reasoning for assignments)
+* **Modern cloud architecture** (scalable and efficient)
+* **Better UI/UX** for both students and instructors
+* **AI-assisted processing** without losing transparency
+
+---
+
+## Improvements Introduced
+
+* Skill normalization using AI
+* Real-time analytics dashboards
+* Contribution tracking and monitoring
+* Asynchronous processing with agent microservices
+
+---
+
+## Why TeamMatch is More Efficient and Modern
+
+* Uses serverless architecture (AWS Lambda, SQS, ECS)
+* Separates frontend, API, and compute layers
+* Handles large workloads asynchronously
+* Provides faster, scalable performance
+
+---
+
+# Conclusion
+
+This design transforms TeamMatch from a conceptual system into a **real-world application architecture**, showing how users interact with the system, how modules communicate, and how AI enhances functionality without sacrificing transparency or control.
