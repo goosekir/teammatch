@@ -1,0 +1,162 @@
+TeamMatch: Database Design
+Overview
+
+The TeamMatch database is designed to support structured team formation, student data collection, instructor configuration, and analytics tracking. The system ensures data integrity, minimal redundancy, and efficient querying by organizing data into well-defined entities with clear relationships.
+
+This design supports all core system features, including student profile submission, deterministic team generation, contribution tracking, and instructor dashboards.
+
+1. Entities and Attributes
+1. Users
+user_id (PK)
+name
+email
+password
+role (student / instructor)
+2. Courses
+course_id (PK)
+course_name
+instructor_id (FK → Users.user_id)
+3. StudentProfiles
+profile_id (PK)
+user_id (FK → Users.user_id)
+course_id (FK → Courses.course_id)
+experience_level
+preferred_role
+4. Skills
+skill_id (PK)
+skill_name
+5. StudentSkills (Junction Table)
+student_skill_id (PK)
+profile_id (FK → StudentProfiles.profile_id)
+skill_id (FK → Skills.skill_id)
+skill_level
+6. Availability
+availability_id (PK)
+profile_id (FK → StudentProfiles.profile_id)
+day_of_week
+time_block
+7. Constraints
+constraint_id (PK)
+course_id (FK → Courses.course_id)
+team_size
+required_skills
+skill_weights
+8. MatchRuns
+run_id (PK)
+course_id (FK → Courses.course_id)
+created_at
+status
+9. Teams
+team_id (PK)
+run_id (FK → MatchRuns.run_id)
+team_score
+10. TeamMembers (Junction Table)
+team_member_id (PK)
+team_id (FK → Teams.team_id)
+profile_id (FK → StudentProfiles.profile_id)
+11. Contributions
+contribution_id (PK)
+profile_id (FK → StudentProfiles.profile_id)
+description
+hours_worked
+created_at
+12. CheckIns
+checkin_id (PK)
+profile_id (FK → StudentProfiles.profile_id)
+tasks_completed
+blockers
+evidence_link
+created_at
+13. RunLogs
+log_id (PK)
+run_id (FK → MatchRuns.run_id)
+message
+created_at
+2. Primary Keys (PK)
+
+Each table includes a primary key to uniquely identify records:
+
+user_id
+course_id
+profile_id
+skill_id
+student_skill_id
+availability_id
+constraint_id
+run_id
+team_id
+team_member_id
+contribution_id
+checkin_id
+log_id
+3. Foreign Keys (FK)
+
+Foreign keys define relationships between tables:
+
+Courses.instructor_id → Users.user_id
+StudentProfiles.user_id → Users.user_id
+StudentProfiles.course_id → Courses.course_id
+StudentSkills.profile_id → StudentProfiles.profile_id
+StudentSkills.skill_id → Skills.skill_id
+Availability.profile_id → StudentProfiles.profile_id
+Constraints.course_id → Courses.course_id
+MatchRuns.course_id → Courses.course_id
+Teams.run_id → MatchRuns.run_id
+TeamMembers.team_id → Teams.team_id
+TeamMembers.profile_id → StudentProfiles.profile_id
+Contributions.profile_id → StudentProfiles.profile_id
+CheckIns.profile_id → StudentProfiles.profile_id
+RunLogs.run_id → MatchRuns.run_id
+4. Relationships
+One-to-Many (1:N)
+One Instructor (User) → many Courses
+One Course → many StudentProfiles
+One Course → many MatchRuns
+One MatchRun → many Teams
+One Team → many TeamMembers
+One StudentProfile → many CheckIns / Contributions
+Many-to-Many (M:N)
+Students ↔ Skills
+A student can have multiple skills
+A skill can belong to multiple students
+Resolved by: StudentSkills
+Teams ↔ Students
+A team has many students
+A student belongs to one team per run
+Resolved by: TeamMembers
+One-to-One (1:1)
+Each MatchRun has associated RunLogs (logical grouping per run)
+5. ER Diagram
+ER Diagram (Text Representation)
+Users (1) ──── (N) Courses
+Users (1) ──── (N) StudentProfiles
+
+Courses (1) ──── (N) StudentProfiles
+Courses (1) ──── (N) Constraints
+Courses (1) ──── (N) MatchRuns
+
+StudentProfiles (1) ──── (N) Availability
+StudentProfiles (1) ──── (N) Contributions
+StudentProfiles (1) ──── (N) CheckIns
+
+StudentProfiles (N) ──── (N) Skills
+Resolved by: StudentSkills
+
+MatchRuns (1) ──── (N) Teams
+
+Teams (N) ──── (N) StudentProfiles
+Resolved by: TeamMembers
+
+MatchRuns (1) ──── (N) RunLogs
+6. Short Explanation
+
+The TeamMatch database is designed to support structured team formation while maintaining data integrity and scalability. Core entities such as Users, Courses, and StudentProfiles capture essential system data, while junction tables like StudentSkills and TeamMembers resolve many-to-many relationships efficiently. This ensures that skills, team assignments, and participation data are stored without redundancy.
+
+Foreign keys enforce relationships between entities, allowing the system to maintain consistency across modules such as team generation, contribution tracking, and analytics. The design supports deterministic team formation, instructor configuration, and real-time updates, making it both efficient and scalable for classroom environments.
+
+7. Design Justification
+No data duplication → normalized structure (skills, teams, profiles separated)
+Scalable → supports large classes and multiple match runs
+Flexible → allows instructor overrides and changing constraints
+Efficient querying → optimized relationships for dashboards and analytics
+Aligned with FRD → supports all required features (team formation, tracking, explainability)
