@@ -1,0 +1,205 @@
+TeamMatch: Ethical, Legal, and Security Analysis
+Overview
+
+TeamMatch is a web application designed to help instructors form balanced student teams in project-based courses. The system collects student data (skills, experience, availability) and uses a deterministic optimization engine to generate fair and explainable team assignments.
+
+Because TeamMatch handles user data and influences academic outcomes, it is important to evaluate its ethical, legal, and security implications.
+
+Ethical Issues
+1. Fairness and Bias
+
+TeamMatch relies on self-reported student data such as skills and experience. This introduces potential bias:
+
+Students may overestimate or underestimate their abilities
+Some groups may underreport confidence (e.g., beginners or underrepresented students)
+Mitigation
+Normalize skills into structured categories
+Use deterministic (non-random) algorithms for consistency
+Provide explainable results for instructor review
+Allow instructor overrides
+
+2. Transparency and Explainability
+
+Automated systems can create distrust if decisions are unclear.
+
+Mitigation
+Use a rule-based optimization engine instead of black-box AI
+Provide explanations for every team assignment
+Log decisions for auditing
+Keep instructors in control of final decisions
+
+3. Privacy Expectations
+
+TeamMatch collects:
+
+Skills and experience
+Availability schedules
+Contribution data
+Risks
+Unauthorized data access
+Over-surveillance of students
+Mitigation
+Limit data visibility:
+Students → only their own data
+Instructors → full class data
+Collect only necessary data
+Clearly communicate data usage
+
+4. Potential Misuse
+
+The system could be misused to:
+
+Rank or label students unfairly
+Track contributions in a harmful or excessive way
+Mitigation
+Present outputs as decision-support tools, not judgments
+Avoid permanent labeling of students
+Ensure instructor oversight
+
+5. Equity in Team Formation
+
+Optimized teams may unintentionally:
+
+Separate friends/support systems
+Over-distribute skilled students
+Mitigation
+Allow instructor customization of constraints
+Provide manual override options
+Continuously evaluate fairness outcomes
+
+Legal Issues
+1. Data Privacy Compliance
+
+TeamMatch handles student-related data, which may fall under regulations like FERPA.
+
+Risks
+Unauthorized data exposure
+Improper data storage
+Mitigation
+Store data securely (AWS DynamoDB)
+Restrict access by role (student vs instructor)
+Do not share data with third parties
+
+2. Third-Party Software and APIs
+
+TeamMatch uses:
+
+AWS (Lambda, S3, DynamoDB, SQS, etc.)
+LLM APIs (OpenAI or Amazon Bedrock)
+Risks
+Violating API terms of service
+Sending sensitive data externally
+Mitigation
+Follow all third-party licensing agreements
+Minimize sensitive data sent to external APIs
+Use LLMs only for parsing and explanation, not decision-making
+
+3. Intellectual Property
+
+Concerns include:
+
+Ownership of student-submitted data
+Ownership of generated outputs
+Mitigation
+Treat student data as user-owned
+Use data only within the educational context
+Avoid redistributing user content
+
+4. User Misconduct
+
+Users could:
+
+Input false data
+Attempt to manipulate team assignments
+Submit harmful or inappropriate content
+Mitigation
+Validate and sanitize all inputs
+Log activity for accountability
+Allow instructor intervention
+
+5. Liability and Responsibility
+
+TeamMatch is a decision-support system, not an authority.
+
+Mitigation
+Clearly state that instructors make final decisions
+Provide transparent reasoning behind outputs
+Avoid automated enforcement of outcomes
+
+Security Issues
+1. Sensitive Data Protection
+
+Stored Data
+Student profiles
+Team assignments
+Instructor configurations
+Audit logs
+Protection Measures
+HTTPS (TLS) for data in transit
+Encryption at rest (AWS-managed)
+Secure cloud storage (DynamoDB, S3)
+
+2. Authentication and Authorization
+
+Implementation
+AWS Cognito for authentication
+Role-based access control:
+Students → limited access
+Instructors → full access
+Security Measures
+JWT-based authentication
+Strict role enforcement
+No unauthorized data access
+
+3. Common Web Vulnerabilities
+
+SQL Injection
+Reduced risk (NoSQL database), but still validate inputs
+Cross-Site Scripting (XSS)
+Escape all user input
+Use React’s built-in protections
+Cross-Site Request Forgery (CSRF)
+Use secure tokens (JWT)
+Implement CSRF protection mechanisms
+
+4. Attack Vectors
+
+Potential attack vectors include:
+
+Malicious client-side input
+Unauthorized API access
+Privilege escalation attempts
+Database access attacks
+Message queue manipulation
+
+5. Security Mitigation Strategy
+
+API Security
+API Gateway authentication
+Rate limiting
+Input validation
+Infrastructure Security
+Least-privilege IAM roles
+Secrets stored in AWS Secrets Manager
+No direct database exposure
+Messaging Security
+Secure SQS access policies
+Dead-letter queues for failed jobs
+Monitoring
+CloudWatch logging
+Audit logs for system activity
+Alerting for suspicious behavior
+
+6. Security Best Practices
+
+Regular security audits
+Code reviews
+Dependency vulnerability scanning
+Logging and monitoring
+Separation of system components (frontend, API, compute)
+
+Conclusion
+
+TeamMatch is designed with fairness, transparency, and security in mind. However, like any system that processes user data and automates decisions, it introduces ethical, legal, and security challenges.
+
+By implementing strong safeguards—such as deterministic algorithms, role-based access control, secure cloud architecture, and human oversight—the system minimizes risks while maintaining trust and reliability.
